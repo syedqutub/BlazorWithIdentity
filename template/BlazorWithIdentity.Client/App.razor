@@ -1,12 +1,11 @@
 ﻿<Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" >
+        <AuthorizeRouteView RouteData="@routeData">
             <Authorizing>
                 Authorizing...
             </Authorizing>
             <NotAuthorized>
-                    <RedirectToLogin />
-                
+                <RedirectToLogin />
             </NotAuthorized>
         </AuthorizeRouteView>
     </Found>

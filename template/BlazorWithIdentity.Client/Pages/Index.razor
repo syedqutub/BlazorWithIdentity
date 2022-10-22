@@ -1,18 +1,19 @@
 ﻿@page "/"
 @layout MainLayout
-@attribute [Authorize]
+@*@attribute [Authorize]*@
 
 <PageTitle>Index</PageTitle>
 
 <AuthorizeView>
     <Authorized>
         <h1>Hello @context.User.Identity.Name !!</h1>
-
-        <p>Welcome to your new app.</p>
-
-        <SurveyPrompt Title="How is Blazor working for you?" />
     </Authorized>
-    <Authorizing>
-        <h1>Loading ...</h1>
-    </Authorizing>
+    <NotAuthorized>
+        <h1>Hello Anonymous !!</h1>
+    </NotAuthorized>
 </AuthorizeView>
+
+
+<p>Welcome to your new app.</p>
+
+<SurveyPrompt Title="How is Blazor working for you?" />
