@@ -2,32 +2,31 @@
 @inject NavigationManager navigationManager
 @inject IdentityAuthenticationStateProvider authStateProvider
 <div class="page">
-    <AuthorizeView>
-        <Authorized>
-            @*Show the menu and the rest of the body*@
-            <div class="sidebar">
-                <NavMenu />
-            </div>
+    <div class="sidebar">
+        <NavMenu />
+    </div>
 
-            <div class="main">
-                <div class="top-row px-4">
+    <div class="main">
+        <div class="top-row px-4">
+            <AuthorizeView>
+                <Authorized>
                     <button type="button" class="btn btn-link ml-md-auto" @onclick="@LogoutClick">Logout</button>
-                </div>
+                </Authorized>
+                <NotAuthorized>
+                    <button type="button" class="btn btn-link ml-md-auto" @onclick=@(e => navigationManager.NavigateTo("/login"))>Login</button>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
 
-                <div class="content px-4">
-                    @Body
-                </div>
-            </div>
-        </Authorized>
-        <NotAuthorized>
-            @*Just render the body so that RedirectToLogin works*@
+        <div class="content px-4">
             @Body
-        </NotAuthorized>
-    </AuthorizeView>
+        </div>
+    </div>
+
 </div>
 
 
-@code{
+@code {
 
     async Task LogoutClick()
     {
