@@ -57,19 +57,23 @@ namespace BlazorWithIdentity.Server.Controllers
         }
 
         [HttpGet]
-        public UserInfo UserInfo()
+        public async Task<UserInfo> UserInfoAsync()
         {
-            //var user = await _userManager.GetUserAsync(HttpContext.User);
-            return BuildUserInfo();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            return BuildUserInfo(user);
         }
 
 
-        private UserInfo BuildUserInfo()
+        private UserInfo BuildUserInfo(ApplicationUser? user)
         {
+            if (user == null)
+                return new();
+
             return new UserInfo
             {
                 IsAuthenticated = User.Identity.IsAuthenticated,
-                UserName = User.Identity.Name,
+                UserName = user.UserName,
+                Name = user.UserName,
                 ExposedClaims = User.Claims
                     //Optionally: filter the claims you want to expose to the client
                     //.Where(c => c.Type == "test-claim")

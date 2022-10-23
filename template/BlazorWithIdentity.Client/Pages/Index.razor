@@ -4,6 +4,8 @@
 
 <PageTitle>Index</PageTitle>
 
+@*Another way for conditional*@
+@*
 <AuthorizeView>
     <Authorized>
         <h1>Hello @context.User.Identity.Name !!</h1>
@@ -12,8 +14,15 @@
         <h1>Hello Anonymous !!</h1>
     </NotAuthorized>
 </AuthorizeView>
+*@
 
+<h1>Hello @(!(Store.UserInfo?.IsAuthenticated ?? false) ? "Anonymous" : Store.UserInfo.Name) !!</h1>
 
 <p>Welcome to your new app.</p>
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@code {
+    [CascadingParameter]
+    public StateStore Store { get; set; }
+}

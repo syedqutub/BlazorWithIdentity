@@ -15,12 +15,15 @@ namespace BlazorWithIdentity.Client.States
 {
     public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private UserInfo _userInfoCache;
+        private StateStore _store;
         private readonly IAuthorizeApi _authorizeApi;
 
-        public IdentityAuthenticationStateProvider(IAuthorizeApi authorizeApi)
+        public IdentityAuthenticationStateProvider(
+            IAuthorizeApi authorizeApi,
+            StateStore store)
         {
             this._authorizeApi = authorizeApi;
+            this._store = store;
         }
 
         public async Task Login(LoginParameters loginParameters)
@@ -38,15 +41,16 @@ namespace BlazorWithIdentity.Client.States
         public async Task Logout()
         {
             await _authorizeApi.Logout();
-            _userInfoCache = null;
+            _store.UserInfo = null;
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 
         private async Task<UserInfo> GetUserInfo()
         {
-            if (_userInfoCache != null && _userInfoCache.IsAuthenticated) return _userInfoCache;
-            _userInfoCache = await _authorizeApi.GetUserInfo();
-            return _userInfoCache;
+            if (_store.UserInfo != null && _store.UserInfo.IsAuthenticated) 
+                return _store.UserInfo;
+            _store.UserInfo = await _authorizeApi.GetUserInfo();
+            return _store.UserInfo;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -57,7 +61,7 @@ namespace BlazorWithIdentity.Client.States
                 var userInfo = await GetUserInfo();
                 if (userInfo.IsAuthenticated)
                 {
-                    var claims = new[] { new Claim(ClaimTypes.Name, userInfo.UserName) }.Concat(userInfo.ExposedClaims.Select(c => new Claim(c.Key, c.Value)));
+                    var claims = new[] { new Claim(ClaimTypes.Name, userInfo.Name) }.Concat(userInfo.ExposedClaims.Select(c => new Claim(c.Key, c.Value)));
                     identity = new ClaimsIdentity(claims, "Server authentication");
                 }
             }
